@@ -1,18 +1,23 @@
-node('MAVEN_JDK8') {
-    stage('version control') {
-        git url: 'https://github.com/khajadevopsmarch23/game-of-life.git',
-            branch: 'scripted'
-    }
-    stage('build') {
-        sh 'export PATH="/usr/lib/jvm/java-1.8.0-openjdk-amd64/bin:$PATH" && mvn package'
-    }
-    stage ('Archive the artifact') {
-        archiveArtifacts onlyIfSuccessful: true,
-            artifacts: '**/target/gameoflife.war',
-            allowEmptyArchive: false
-    }
-    stage('show the test results') {
-        junit testResults: '**/surefire-reports/TEST-*.xml',
-              allowEmptyResults: true
+pipeline {
+    agent { label 'MAVEN_JDK8' }
+    stages {
+        stage('vcs') {
+            steps {
+                git url: 'https://github.com/khajadevopsmarch23/game-of-life.git',
+                    branch: 'declarative'
+            }
+        }
+        stage('package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+        stage('post build') {
+            steps {
+                archiveArtifacts artifacts: '**/target/gameoflife.war',
+                                 onlyIfSuccessful: true
+                junit testResults: '**/surefire-reports/TEST-*.xml'
+            }
+        }
     }
 }
