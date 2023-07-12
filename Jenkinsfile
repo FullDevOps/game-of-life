@@ -1,7 +1,7 @@
 node ('MAVEN_JDK8') {
     stage('vesion control') {
         git 
-        url: https://github.com/FullDevOps/game-of-life.git
+        url: https://github.com/FullDevOps/game-of-life.git,
         branch: 'srcripted'
     }
     stage('build') {
